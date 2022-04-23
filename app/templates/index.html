@@ -1,0 +1,225 @@
+{% extends "bootstrap/base.html" %}
+{% block head %}
+<head>
+   <title>Resume Match: resume-match.com</title>
+   <!-- Latest compiled and minified CSS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+   <!-- favicon is in static folder; href points to a "variable" defined by curly braces. -->
+   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   <!-- Custom styles in main.css -->
+   <!-- main.css is in static folder; href points to a "variable" defined by curly braces. -->
+   <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+   <link href="{{ url_for('static', filename='css/jquery-3.3.1.min.js') }}" rel="stylesheet">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+   <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+   <script>
+      function clearResumeText() {
+      var x = document.getElementById("resume_text");
+      if (x.innerHTML === " ") {
+       x.innerHTML = " ";
+      } else {
+       x.innerHTML = " ";
+      }
+      }
+
+
+      function startLoading(){
+        $('#ldg').show()
+      }
+      function stopLoading(){
+        $('#ldg').hide()
+      }
+
+      function clearResumePred() {
+      var x = document.getElementById("resume_prediction");
+      if (x.innerHTML === " ") {
+      x.innerHTML = " ";
+      } else {
+      x.innerHTML = " ";
+      }
+      }
+      function chooseDemoResume(data) {
+        console.log('data: ', data);
+          $.ajax({
+            type : 'POST',
+            data: data,
+            url : '/demo_resumes',
+            success: function(d){
+              stopLoading();
+              $("#resume_text").html(d.resume_text);
+              $("#resume_prediction").html(d.resume_prediction);
+              console.log('d.resume_text: ', d.resume_text);
+              console.log('d.resume_prediction: ', d.resume_prediction);
+              console.log('demo started');
+          }
+        })
+      }
+         $(document).ready(function(){
+             $("#btn_upload").click(function(e){
+               console.log("click!")
+               e.preventDefault();
+                 $.ajax({
+                   data: new FormData($('#upload')[0]),
+                   type : 'POST',
+                   url : '/upload_resume',
+                   cache: false,
+                   processData: false,
+                   contentType: false,
+                   success: function(d){
+                     ajaxStop();
+                     $("#resume_text").html(d.resume_text);
+                     $("#resume_prediction").html(d.resume_prediction);
+                   }
+               });
+             });
+         });
+   </script>
+</head>
+{% endblock %}
+{% block content %}
+<body onload="stopLoading()">
+   <div class="jumbotron backgroundIm">
+ <div class=" ">
+ </div>
+   </div>
+   <div class="container">
+      <h1 class="display-3 text-center">Get matched with the perfect job!</h1>
+      <h4 class="text-center">Upload your resume and find the right job title using OCR and Machine Learning </h4>
+      </br>
+      </br>
+   </div>
+   <div class="container">
+      <div class="row">
+         <div class="col-12">
+            <!-- <h3 class="card-title">Upload Your Resume</h3>
+            <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/upload_resume">
+               <div class="col">
+                  <input type="file" name="data_file">
+                  <button id="btn_upload" type="submit" class="btn btn-lg btn-primary" disabled >Upload</button>
+               </div>
+            </form> -->
+            </br>
+            </br>
+         </div>
+      </div>
+      </br>
+      </br>
+      <div class="row">
+         <div class="col-12">
+            <h2 class="card-title">Demonstration Mode</h2>
+            <h3 class="card-text">Please use the preloaded sample resumes by clicking on the photos below.</h3>
+            </br>
+            </br>
+         </div>
+      </div>
+   </div>
+   <div class="container">
+      <div class="row">
+         <div class="col-md-3">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Web Developer</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Data Scientist</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Sales Manager</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card" >
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Accountant</h5>
+               </div>
+            </div>
+         </div>
+         </br></br>
+      </div>
+      </br>
+      </br>
+      <div class="row">
+         <div class="col-12">
+            <h2 class="card-title">How it Works</h2>
+            <h4 class="card-text">Clicking on one of the above photos uploads a sample resume as a PDF, then passes it through optical character recognition and displays the text below.  </h4>
+          </br>
+          <h4 class="card-text">The text is then passed into the machine learning algorithm, which classifies the resume according to its content and shows the classification in the below box.</h4>
+         </div>
+         <div id="ldg">
+         </div>
+      </div>
+      </br>
+      </br>
+      <div class="row">
+         <div class="col-9">
+            <div class="card">
+               <h5 class="card-header">Resume Text: </h5>
+               <div id="resume_text" class="card-body">
+
+               </div>
+            </div>
+            </br>
+            </br>
+            </br>
+         </div>
+         <div class="col-3">
+            <div class="card">
+               <h5 class="card-header">Classification: </h5>
+               <div id="resume_prediction" class="card-body">
+               </div>
+            </div>
+            </br>
+            </br>
+            </br>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-12">
+            <h3 class="card-title">Under the Hood</h3>
+            <p class="card-text">Details here about the algorithm.</p>
+            </br>
+            </br>
+            </br>
+         </div>
+      </div>
+   </div>
+   <div class="container">
+      <div>
+         <footer class="footer">
+            <div class="container" align="center">
+               <a href="https://github.com/zubairwazir/" class="btn btn-social-icon btn-github btn-small"><i class="fa fa-github fa-3x"></i></a>
+               <a href="https://linkedin.com/in/zubairwazir/" class="btn btn-social-icon btn-linkedin btn-small"><i class="fa fa-linkedin fa-3x"></i></a>
+               </p>
+            </div>
+         </footer>
+      </div>
+   </div>
+   <!-- Bootstrap core JavaScript placed at end of document so pages load faster -->
+   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+</body>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+{% endblock %}
