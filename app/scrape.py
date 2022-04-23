@@ -36,7 +36,7 @@ for search_term in search_term_lst:
     print('{} completed for all locations'.format(search_term))
 print('job_desc_df.head(): ', job_desc_df.head())
 print('job_desc_df.info(): ', job_desc_df.info())
-job_desc_df.to_csv('job_desc_csv_fixed_url.csv', index=False, header=True)
+job_desc_df.to_csv('job_desc_skills_scrape_data.csv', index=False, header=True)
 print('All completed!')
 time.sleep(4)
 driver.close()

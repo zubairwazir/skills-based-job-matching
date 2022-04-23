@@ -47,7 +47,7 @@ def ocr_on_pdf(resume_pdf):
 
 def train_test_sgd_classifier():
     # Train and test algorithm
-    df = pd.read_csv('../data/job_desc_csv_fixed_url.csv')
+    df = pd.read_csv('../data/job_desc_skills_scrape_data.csv')
     X_train, X_test, y_train, y_test = train_test_split(df.job_descriptions, df.search_term, random_state=0)
 
     count_vect = CountVectorizer(stop_words='english')
